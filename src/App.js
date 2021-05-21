@@ -1,34 +1,20 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, { Fragment, useState, useReducer } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/outline';
-import { useStep } from 'react-hooks-helper';
+import React, { Fragment, useState, useReducer } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { CheckIcon } from "@heroicons/react/outline";
+import { useStep } from "react-hooks-helper";
 
 export default function Example() {
   const [state, dispatch] = useReducer(reducer, []);
-  const questions = ['heello'];
+  const questions = ["heello"];
   const [open, setOpen] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const {
     index,
-    navigation: { previous, next }
-  } = useStep({ steps: 3 });
-  // const nextQuestion = () => {
-  //   setCurrentQuestion(currentQuestion)
-  // }
+    navigation: { previous, next },
+  } = useStep({ steps: 3, initialStep: 1 });
 
-  // return (
-  //         <div>
-  //         <div>{index}</div>
-  //         <button disabled={index === 0} onClick={previous}>
-  //           Previous
-  //         </button>
-  //         <button disabled={index === 2} onClick={next}>
-  //           Next
-  //         </button>
-  //       </div>
-  // )
-
+  console.log(state);
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -93,31 +79,30 @@ export default function Example() {
 function reducer(state, action) {
   const { payload } = action;
   switch (action.type) {
-    case 'ADD_ANSWER':
+    case "ADD_ANSWER":
       return [...state, payload];
     default:
       throw new Error();
   }
 }
 
-const InnerForm = (index, dispatch, previous, next) => {
+const InnerForm = ({ index, dispatch, previous, next }) => {
+  console.log("index", index);
   switch (index) {
     case 1:
       return (
         <QuestionOne dispatch={dispatch} previous={previous} next={next} />
       );
     default:
-      return (
-        <QuestionOne dispatch={dispatch} previous={previous} next={next} />
-      );
+      return <div />;
   }
 };
 
 const QuestionOne = ({ dispatch, previous, next }) => {
   const [answer, setAnswer] = useState();
-
+  console.log("answer", answer);
   const handleClick = () => {
-    dispatch({ type: 'ADD_ANSWER', answer });
+    dispatch({ type: "ADD_ANSWER", payload: { one: answer } });
     next();
   };
 
@@ -132,7 +117,7 @@ const QuestionOne = ({ dispatch, previous, next }) => {
         </Dialog.Title>
         <div className="mt-2">
           <p className="text-sm text-gray-500">
-            <input value={answer} onChange={e => setAnswer(e.target.value)} />
+            <input value={answer} onChange={(e) => setAnswer(e.target.value)} />
           </p>
         </div>
       </div>
